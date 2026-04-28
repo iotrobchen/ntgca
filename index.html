@@ -13,18 +13,31 @@
             --warning-color: #ffc107;
             --danger-color: #dc3545;
             --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.85); /* 提升透明度 */
             --text-main: #333;
             --text-muted: #666;
         }
 
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: var(--bg-color);
+            background-image: url('YOYO活力夢想-插畫風.jpg'); /* 確保檔名與上傳相符 */
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             color: var(--text-main);
             margin: 0;
             padding: 20px;
             line-height: 1.6;
+        }
+
+        /* 調整遮罩透明度，讓背景圖透出來 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.4); /* 從 0.6 調降至 0.4，增加通透感 */
+            z-index: -1;
         }
 
         .container {
@@ -32,18 +45,22 @@
             margin: auto;
         }
 
-        /* Header 改為左右並排樣式 */
+        /* Header 樣式優化 */
         header {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 30px;
             margin-bottom: 40px;
-            padding: 20px 0;
+            padding: 25px;
             text-align: left;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        /* LOGO 樣式 */
         .logo-container {
             flex-shrink: 0;
         }
@@ -53,7 +70,7 @@
             height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             border: 4px solid #fff;
             transition: transform 0.3s ease;
         }
@@ -67,34 +84,33 @@
             flex-direction: column;
         }
 
-        /* 標題分行樣式 */
         .title-main {
             font-size: 1.2rem;
-            color: var(--text-muted);
+            color: #444;
             letter-spacing: 2px;
             margin-bottom: 5px;
-            font-weight: 400;
+            font-weight: 700;
+            text-shadow: 0 0 10px #fff;
         }
 
         .title-sub {
             font-size: 2.2rem;
             color: #1a1a1a;
             margin: 0;
-            font-weight: 700;
-            background: linear-gradient(45deg, #1a1a1a, #444);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            text-shadow: 0 0 15px #fff, 0 0 5px #fff; /* 加強標題陰影確保可讀性 */
         }
 
         .global-timer {
             font-size: 0.9rem;
             color: var(--text-muted);
-            background: rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.6);
             display: inline-block;
             padding: 6px 16px;
             border-radius: 20px;
             margin-top: 10px;
             width: fit-content;
+            font-weight: bold;
         }
 
         /* 飛場區塊樣式 */
@@ -103,7 +119,9 @@
             padding: 25px;
             border-radius: 16px;
             margin-bottom: 40px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         h2 {
@@ -114,9 +132,9 @@
             border-left: 6px solid var(--primary-color);
             padding-left: 15px;
             color: #2c3e50;
+            text-shadow: 0 0 5px #fff;
         }
 
-        /* 狀態列 */
         .status-bar {
             display: flex;
             flex-wrap: wrap;
@@ -124,7 +142,7 @@
             gap: 15px;
             margin: 15px 0;
             padding: 12px;
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 10px;
         }
 
@@ -144,10 +162,9 @@
         .wind-detail {
             font-size: 0.95rem;
             color: var(--text-main);
-            font-weight: 500;
+            font-weight: 700;
         }
 
-        /* 網格佈局 */
         .widget-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -162,9 +179,8 @@
             margin-top: 25px;
         }
 
-        /* 卡片元件 */
         .card {
-            border: 1px solid #edf0f2;
+            border: 1px solid rgba(237, 240, 242, 0.5);
             border-radius: 12px;
             overflow: hidden;
             background: #fff;
@@ -172,7 +188,7 @@
         }
 
         .card:hover {
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         .card-header {
@@ -199,12 +215,26 @@
             background: #000;
             min-height: 200px;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         img.cam-img {
             width: 100%;
             height: auto;
             display: block;
+        }
+
+        .loading-text {
+            position: absolute;
+            color: #fff;
+            font-size: 0.9rem;
+            display: none;
+            z-index: 10;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 10px;
+            border-radius: 4px;
         }
 
         .external-link {
@@ -224,13 +254,15 @@
         footer {
             text-align: center;
             padding: 60px 0 40px;
-            color: var(--text-muted);
+            color: #444;
             font-size: 0.85rem;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid rgba(0,0,0,0.1);
             margin-top: 20px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 20px 20px 0 0;
+            font-weight: bold;
         }
 
-        /* 響應式微調 */
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
@@ -243,13 +275,29 @@
             .title-sub { font-size: 1.8rem; }
             .logo-img { width: 120px; height: 120px; }
         }
-
-        @media (max-width: 600px) {
-            body { padding: 10px; }
-            .location-section { padding: 18px; }
-            .cam-grid { grid-template-columns: 1fr; }
-        }
     </style>
+    <script>
+        /**
+         * 國道影像錯誤處理
+         */
+        let retryCount = 0;
+        function handleFreewayError(img) {
+            console.log('國道影像載入異常，嘗試重試...');
+            const loading = document.getElementById('freeway-loading');
+            if(loading) loading.style.display = 'block';
+            
+            if(retryCount < 5) {
+                retryCount++;
+                setTimeout(() => {
+                    const timestamp = new Date().getTime();
+                    img.src = `https://cctvn.freeway.gov.tw/mjpg/bmjpg?camera=34720&retry=${retryCount}&t=${timestamp}`;
+                }, 2000);
+            } else {
+                img.src = 'https://placehold.co/600x400?text=國道影像載入中或不穩定';
+                if(loading) loading.innerText = '連線較慢...';
+            }
+        }
+    </script>
 </head>
 <body>
 
@@ -261,7 +309,7 @@
         <div class="header-text">
             <span class="title-main">高程YOYO班 202601期</span>
             <h1 class="title-sub">飛場資訊觀測站</h1>
-            <div class="global-timer" id="global-clock">更新時間：載入中...</div>
+            <div class="global-timer" id="global-clock">最後更新：載入中...</div>
         </div>
     </header>
 
@@ -287,20 +335,21 @@
         <div class="cam-grid">
             <div class="card">
                 <div class="card-header">
-                    樹林大義路口 (地面環境參考-飛場在右前方)
+                    樹林大義路口 (地面環境參考)
                     <a href="https://www.twipcam.com/cam/nwt-000274" target="_blank" class="external-link">開啟大圖 ↗</a>
                 </div>
                 <div class="img-container">
-                    <img src="https://c01.twipcam.com/cam/snapshot/nwt-000274.jpg" alt="樹林監視器" class="cam-img" onerror="this.src='https://placehold.co/600x400?text=影像暫時無法讀取'">
+                    <img src="https://c01.twipcam.com/cam/snapshot/nwt-000274.jpg" alt="樹林監視器" class="cam-img" onerror="this.src='https://placehold.co/600x400?text=影像載入失敗'">
                 </div>
             </div>
             <div class="card">
                 <div class="card-header">
-                    國三 47K 北向 (高空雲層參考-飛場在右側)
+                    國三 47K 北向 (高空雲層參考)
                 </div>
-                <div class="img-container">
-                    <!-- 使用 bmjpg 路徑並優化加載 -->
-                    <img src="https://cctvn.freeway.gov.tw/mjpg/bmjpg?camera=34720" alt="國道監視器" class="cam-img" id="freeway-cam">
+                <div class="img-container" id="freeway-container">
+                    <div class="loading-text" id="freeway-loading">連線中...</div>
+                    <img src="https://cctvn.freeway.gov.tw/mjpg/bmjpg?camera=34720" alt="國道監視器" class="cam-img" id="freeway-cam" 
+                         onerror="handleFreewayError(this)">
                 </div>
             </div>
         </div>
@@ -328,7 +377,7 @@
         <div class="cam-grid">
             <div class="card">
                 <div class="card-header">
-                    台65線 9K+600 (浮洲橋附近-飛場在右側)
+                    台65線 9K+600 (浮洲橋附近)
                     <a href="https://www.twipcam.com/cam/t65-9k-600" target="_blank" class="external-link">開啟大圖 ↗</a>
                 </div>
                 <div class="img-container">
@@ -337,7 +386,7 @@
             </div>
             <div class="card">
                 <div class="card-header">
-                    土城抽水站 (地面環境參考-飛場在右後)
+                    土城抽水站 (地面環境參考)
                     <a href="https://www.twipcam.com/cam/wra-002469" target="_blank" class="external-link">開啟大圖 ↗</a>
                 </div>
                 <div class="img-container">
@@ -355,9 +404,6 @@
 </footer>
 
 <script>
-/**
- * 更新頂部時鐘
- */
 function updateClock() {
     const now = new Date();
     document.getElementById('global-clock').innerText = '最後更新時間：' + now.toLocaleTimeString('zh-TW', { 
@@ -370,9 +416,6 @@ function updateClock() {
     });
 }
 
-/**
- * 判定飛行狀態與樣式
- */
 function judgeStatus(wind, gust) {
     const maxWind = Math.max(wind, gust);
     if (maxWind < 5) return { cls: 'good', text: '🟢 適合飛行' };
@@ -380,9 +423,6 @@ function judgeStatus(wind, gust) {
     return { cls: 'bad', text: '🔴 風速過大' };
 }
 
-/**
- * 抓取氣象 API 資料
- */
 async function fetchWeatherData(lat, lon, statusId, detailId) {
     try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=wind_speed_10m,wind_gusts_10m&wind_speed_unit=ms`;
@@ -396,19 +436,16 @@ async function fetchWeatherData(lat, lon, statusId, detailId) {
         const elStatus = document.getElementById(statusId);
         const elDetail = document.getElementById(detailId);
         
-        elStatus.className = 'status-light ' + result.cls;
-        elStatus.innerText = result.text;
-        elDetail.innerText = `持續風速: ${speed.toFixed(1)} m/s | 最大陣風: ${gust.toFixed(1)} m/s`;
-        
+        if(elStatus && elDetail) {
+            elStatus.className = 'status-light ' + result.cls;
+            elStatus.innerText = result.text;
+            elDetail.innerText = `持續風速: ${speed.toFixed(1)} m/s | 最大陣風: ${gust.toFixed(1)} m/s`;
+        }
     } catch (error) {
-        console.error('API Error:', error);
-        document.getElementById(detailId).innerText = '資料獲取失敗，請檢查網路連線。';
+        console.error('氣象資料讀取失敗:', error);
     }
 }
 
-/**
- * 刷新全部資料
- */
 function refreshAllData() {
     updateClock();
     fetchWeatherData(24.9604, 121.3792, 'status-houchun', 'detail-houchun');
@@ -416,24 +453,24 @@ function refreshAllData() {
     
     const timestamp = new Date().getTime();
     
-    // 一般監視器圖片刷新
     const camImages = document.querySelectorAll('.img-container img.cam-img:not(#freeway-cam)');
     camImages.forEach(img => {
         const baseUrl = img.src.split('?')[0];
         img.src = `${baseUrl}?t=${timestamp}`;
     });
 
-    // 國道監視器特殊處理：避免過度頻繁重新刷新導致閃爍
     const fwCam = document.getElementById('freeway-cam');
     if (fwCam) {
-        const baseUrl = fwCam.src.split('&t=')[0];
-        fwCam.src = `${baseUrl}&t=${timestamp}`;
+        retryCount = 0; 
+        const loading = document.getElementById('freeway-loading');
+        if(loading) loading.style.display = 'none';
+        fwCam.src = `https://cctvn.freeway.gov.tw/mjpg/bmjpg?camera=34720&t=${timestamp}`;
     }
 }
 
 window.onload = () => {
     refreshAllData();
-    setInterval(refreshAllData, 60000);
+    setInterval(refreshAllData, 90000);
 };
 </script>
 
