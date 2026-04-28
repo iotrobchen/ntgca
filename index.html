@@ -180,21 +180,23 @@
         }
 
         .card {
-            border: 1px solid rgba(237, 240, 242, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 12px;
             overflow: hidden;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.65); /* 將底層卡片也設為半透明 */
             transition: all 0.3s ease;
+            backdrop-filter: blur(5px); /* 增加磨砂玻璃感 */
         }
 
         .card:hover {
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.85); /* 懸停時稍微加深 */
         }
 
         .card-header {
             padding: 12px 18px;
-            background: #fcfcfc;
-            border-bottom: 1px solid #eee;
+            background: rgba(255, 255, 255, 0.5); /* 標題欄位透明 */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             font-weight: bold;
             display: flex;
             justify-content: space-between;
@@ -207,6 +209,7 @@
             height: 260px;
             border: none;
             display: block;
+            background: transparent; /* 確保 iframe 內部若有支援也是透明 */
         }
 
         .img-container {
