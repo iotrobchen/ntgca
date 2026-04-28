@@ -32,20 +32,25 @@
             margin: auto;
         }
 
+        /* Header 改為左右並排樣式 */
         header {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
             margin-bottom: 40px;
             padding: 20px 0;
+            text-align: left;
         }
 
         /* LOGO 樣式 */
         .logo-container {
-            margin-bottom: 20px;
+            flex-shrink: 0;
         }
 
         .logo-img {
-            width: 180px; /* 調整 Logo 大小 */
-            height: 180px;
+            width: 140px; 
+            height: 140px;
             border-radius: 50%;
             object-fit: cover;
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
@@ -57,13 +62,17 @@
             transform: scale(1.05);
         }
 
+        .header-text {
+            display: flex;
+            flex-direction: column;
+        }
+
         /* 標題分行樣式 */
         .title-main {
             font-size: 1.2rem;
             color: var(--text-muted);
             letter-spacing: 2px;
             margin-bottom: 5px;
-            display: block;
             font-weight: 400;
         }
 
@@ -71,7 +80,6 @@
             font-size: 2.2rem;
             color: #1a1a1a;
             margin: 0;
-            display: block;
             font-weight: 700;
             background: linear-gradient(45deg, #1a1a1a, #444);
             -webkit-background-clip: text;
@@ -85,7 +93,8 @@
             display: inline-block;
             padding: 6px 16px;
             border-radius: 20px;
-            margin-top: 15px;
+            margin-top: 10px;
+            width: fit-content;
         }
 
         /* 飛場區塊樣式 */
@@ -189,6 +198,7 @@
             width: 100%;
             background: #000;
             min-height: 200px;
+            overflow: hidden;
         }
 
         img.cam-img {
@@ -221,12 +231,22 @@
         }
 
         /* 響應式微調 */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            .header-text {
+                align-items: center;
+            }
+            .title-sub { font-size: 1.8rem; }
+            .logo-img { width: 120px; height: 120px; }
+        }
+
         @media (max-width: 600px) {
             body { padding: 10px; }
             .location-section { padding: 18px; }
-            .title-sub { font-size: 1.6rem; }
-            .title-main { font-size: 1rem; }
-            .logo-img { width: 140px; height: 140px; }
             .cam-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -236,12 +256,13 @@
 <div class="container">
     <header>
         <div class="logo-container">
-            <!-- 插入使用者提供的圖片 -->
             <img src="團體友誼-復古風.jpg" alt="高程飛行 YOYO 同學會 LOGO" class="logo-img">
         </div>
-        <span class="title-main">高程YOYO班 202601期</span>
-        <h1 class="title-sub">飛場資訊觀測站</h1>
-        <div class="global-timer" id="global-clock">更新時間：載入中...</div>
+        <div class="header-text">
+            <span class="title-main">高程YOYO班 202601期</span>
+            <h1 class="title-sub">飛場資訊觀測站</h1>
+            <div class="global-timer" id="global-clock">更新時間：載入中...</div>
+        </div>
     </header>
 
     <!-- 後村堰飛場 -->
@@ -278,7 +299,8 @@
                     國三 47K 北向 (高空雲層參考)
                 </div>
                 <div class="img-container">
-                    <img src="https://cctvn.freeway.gov.tw/abs2mjpg/bmjpg?camera=34720" alt="國道監視器" class="cam-img">
+                    <!-- 使用 bmjpg 路徑並優化加載 -->
+                    <img src="https://cctvn.freeway.gov.tw/mjpg/bmjpg?camera=34720" alt="國道監視器" class="cam-img" id="freeway-cam">
                 </div>
             </div>
         </div>
@@ -349,7 +371,7 @@ function updateClock() {
 }
 
 /**
- * 判定飛行狀態與樣式 (依據風速及陣風判定)
+ * 判定飛行狀態與樣式
  */
 function judgeStatus(wind, gust) {
     const maxWind = Math.max(wind, gust);
@@ -389,24 +411,28 @@ async function fetchWeatherData(lat, lon, statusId, detailId) {
  */
 function refreshAllData() {
     updateClock();
-    // 後村堰座標
     fetchWeatherData(24.9604, 121.3792, 'status-houchun', 'detail-houchun');
-    // 浮洲座標
     fetchWeatherData(24.9891, 121.4401, 'status-fuzhou', 'detail-fuzhou');
     
-    // 重新載入所有圖片以防止快取舊圖 (加上隨機參數)
-    const images = document.querySelectorAll('.img-container img.cam-img');
     const timestamp = new Date().getTime();
-    images.forEach(img => {
+    
+    // 一般監視器圖片刷新
+    const camImages = document.querySelectorAll('.img-container img.cam-img:not(#freeway-cam)');
+    camImages.forEach(img => {
         const baseUrl = img.src.split('?')[0];
         img.src = `${baseUrl}?t=${timestamp}`;
     });
+
+    // 國道監視器特殊處理：避免過度頻繁重新刷新導致閃爍
+    const fwCam = document.getElementById('freeway-cam');
+    if (fwCam) {
+        const baseUrl = fwCam.src.split('&t=')[0];
+        fwCam.src = `${baseUrl}&t=${timestamp}`;
+    }
 }
 
-// 初始化與定時器設定
 window.onload = () => {
     refreshAllData();
-    // 每 60 秒自動更新一次
     setInterval(refreshAllData, 60000);
 };
 </script>
