@@ -122,7 +122,6 @@
 
         /* 飛場區塊樣式：變得更透 */
         .location-section {
-            background: var(--glass-bg);
             padding: 25px;
             border-radius: 20px;
             margin-bottom: 40px;
@@ -130,6 +129,15 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        /* 替兩個區塊加上淡淡的專屬色彩 */
+        #section-houchun {
+            background: linear-gradient(135deg, rgba(173, 216, 230, 0.25), rgba(255, 255, 255, 0.15)); /* 淡藍色 */
+        }
+
+        #section-fuzhou {
+            background: linear-gradient(135deg, rgba(255, 228, 181, 0.25), rgba(255, 255, 255, 0.15)); /* 淡橘色 */
         }
 
         h2 {
@@ -296,7 +304,7 @@
          * 國道影像錯誤處理
          */
         let retryCount = 0;
-        function handleFreewayError(img) {
+        function handleFreewayError(imgElement) {
             console.log('國道影像載入異常，嘗試重試...');
             const loading = document.getElementById('freeway-loading');
             if(loading) loading.style.display = 'block';
@@ -305,12 +313,31 @@
                 retryCount++;
                 setTimeout(() => {
                     const timestamp = new Date().getTime();
-                    img.src = `https://cctvn.freeway.gov.tw/mjpg/bmjpg?camera=34720&retry=${retryCount}&t=${timestamp}`;
+                    updateImageSmoothly(imgElement, `https://cctvn.freeway.gov.tw/mjpg/bmjpg?camera=34720&retry=${retryCount}&t=${timestamp}`);
                 }, 2000);
             } else {
-                img.src = 'https://placehold.co/600x400?text=國道影像載入中或不穩定';
+                imgElement.src = 'https://placehold.co/600x400?text=國道影像載入中或不穩定';
                 if(loading) loading.innerText = '連線較慢...';
             }
+        }
+
+        /**
+         * 影像無縫刷新 (預先載入，徹底解決閃黑問題)
+         */
+        function updateImageSmoothly(imgElement, newUrl) {
+            const tempImg = new Image();
+            tempImg.onload = () => {
+                imgElement.src = newUrl;
+                // 如果是國道影像，隱藏載入文字
+                if(imgElement.id === 'freeway-cam') {
+                    const loading = document.getElementById('freeway-loading');
+                    if(loading) loading.style.display = 'none';
+                }
+            };
+            tempImg.onerror = () => {
+                if(imgElement.id === 'freeway-cam') handleFreewayError(imgElement);
+            };
+            tempImg.src = newUrl;
         }
     </script>
 </head>
@@ -329,7 +356,7 @@
     </header>
 
     <!-- 後村堰飛場 -->
-    <section class="location-section">
+    <section class="location-section" id="section-houchun">
         <h2>📍 新北市後村堰遙控飛機場</h2>
         <div class="status-bar">
             <div id="status-houchun" class="status-light">檢測中...</div>
@@ -350,7 +377,7 @@
         <div class="cam-grid">
             <div class="card">
                 <div class="card-header">
-                    樹林大義路口 (地面環境參考)
+                    樹林大義路口 (地面狀況-飛場在右前)
                     <a href="https://www.twipcam.com/cam/nwt-000274" target="_blank" class="external-link">開啟大圖 ↗</a>
                 </div>
                 <div class="img-container">
@@ -359,7 +386,7 @@
             </div>
             <div class="card">
                 <div class="card-header">
-                    國三 47K 北向 (高空雲層參考)
+                    國三 47K 北向 (高空雲層-飛場在右方)
                 </div>
                 <div class="img-container" id="freeway-container">
                     <div class="loading-text" id="freeway-loading">連線中...</div>
@@ -371,7 +398,7 @@
     </section>
 
     <!-- 浮洲飛場 -->
-    <section class="location-section">
+    <section class="location-section" id="section-fuzhou">
         <h2>📍 新北市浮洲環保公園</h2>
         <div class="status-bar">
             <div id="status-fuzhou" class="status-light">檢測中...</div>
@@ -392,7 +419,7 @@
         <div class="cam-grid">
             <div class="card">
                 <div class="card-header">
-                    台65線 9K+600 (浮洲橋附近)
+                    台65線 9K+600 (浮洲橋旁-飛場在右方)
                     <a href="https://www.twipcam.com/cam/t65-9k-600" target="_blank" class="external-link">開啟大圖 ↗</a>
                 </div>
                 <div class="img-container">
@@ -401,7 +428,7 @@
             </div>
             <div class="card">
                 <div class="card-header">
-                    土城抽水站 (地面環境參考)
+                    土城抽水站 (地面環境-飛場在右後)
                     <a href="https://www.twipcam.com/cam/wra-002469" target="_blank" class="external-link">開啟大圖 ↗</a>
                 </div>
                 <div class="img-container">
@@ -471,15 +498,13 @@ function refreshAllData() {
     const camImages = document.querySelectorAll('.img-container img.cam-img:not(#freeway-cam)');
     camImages.forEach(img => {
         const baseUrl = img.src.split('?')[0];
-        img.src = `${baseUrl}?t=${timestamp}`;
+        updateImageSmoothly(img, `${baseUrl}?t=${timestamp}`);
     });
 
     const fwCam = document.getElementById('freeway-cam');
     if (fwCam) {
         retryCount = 0; 
-        const loading = document.getElementById('freeway-loading');
-        if(loading) loading.style.display = 'none';
-        fwCam.src = `https://cctvn.freeway.gov.tw/mjpg/bmjpg?camera=34720&t=${timestamp}`;
+        updateImageSmoothly(fwCam, `https://cctvn.freeway.gov.tw/mjpg/bmjpg?camera=34720&t=${timestamp}`);
     }
 }
 
