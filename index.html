@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高程YOYO班202601期 飛場資訊觀測站</title>
+    <!-- 使用 Google Fonts 提升質感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-main: #333;
+            --text-muted: #666;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        /* LOGO 樣式 */
+        .logo-container {
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            width: 180px; /* 調整 Logo 大小 */
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 4px solid #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        /* 標題分行樣式 */
+        .title-main {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 400;
+        }
+
+        .title-sub {
+            font-size: 2.2rem;
+            color: #1a1a1a;
+            margin: 0;
+            display: block;
+            font-weight: 700;
+            background: linear-gradient(45deg, #1a1a1a, #444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .global-timer {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.05);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-top: 15px;
+        }
+
+        /* 飛場區塊樣式 */
+        .location-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            margin-top: 0;
+            border-left: 6px solid var(--primary-color);
+            padding-left: 15px;
+            color: #2c3e50;
+        }
+
+        /* 狀態列 */
+        .status-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .status-light {
+            padding: 8px 18px;
+            border-radius: 50px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .status-light.good { background: var(--success-color); }
+        .status-light.warn { background: var(--warning-color); color: #333; }
+        .status-light.bad { background: var(--danger-color); }
+
+        .wind-detail {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        /* 網格佈局 */
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .cam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        /* 卡片元件 */
+        .card {
+            border: 1px solid #edf0f2;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            padding: 12px 18px;
+            background: #fcfcfc;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        iframe {
+            width: 100%;
+            height: 260px;
+            border: none;
+            display: block;
+        }
+
+        .img-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            min-height: 200px;
+        }
+
+        img.cam-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .external-link {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 4px 8px;
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .external-link:hover {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 0 40px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+
+        /* 響應式微調 */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .location-section { padding: 18px; }
+            .title-sub { font-size: 1.6rem; }
+            .title-main { font-size: 1rem; }
+            .logo-img { width: 140px; height: 140px; }
+            .cam-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo-container">
+            <!-- 插入使用者提供的圖片 -->
+            <img src="團體友誼-復古風.jpg" alt="高程飛行 YOYO 同學會 LOGO" class="logo-img">
+        </div>
+        <span class="title-main">高程YOYO班 202601期</span>
+        <h1 class="title-sub">飛場資訊觀測站</h1>
+        <div class="global-timer" id="global-clock">更新時間：載入中...</div>
+    </header>
+
+    <!-- 後村堰飛場 -->
+    <section class="location-section">
+        <h2>📍 新北市後村堰遙控飛機場</h2>
+        <div class="status-bar">
+            <div id="status-houchun" class="status-light">檢測中...</div>
+            <div class="wind-detail" id="detail-houchun">正在讀取最新氣象資料...</div>
+        </div>
+
+        <div class="widget-grid">
+            <div class="card">
+                <div class="card-header">即時天氣觀測</div>
+                <iframe src="https://www.twipcam.com/widget/v1/wx-info?lat=24.9604&lon=121.3792"></iframe>
+            </div>
+            <div class="card">
+                <div class="card-header">動態風場預測</div>
+                <iframe src="https://www.twipcam.com/widget/v1/wind?lat=24.9604&lon=121.3792&zoom=10"></iframe>
+            </div>
+        </div>
+
+        <div class="cam-grid">
+            <div class="card">
+                <div class="card-header">
+                    樹林大義路口 (地面環境)
+                    <a href="https://www.twipcam.com/cam/nwt-000274" target="_blank" class="external-link">開啟大圖 ↗</a>
+                </div>
+                <div class="img-container">
+                    <img src="https://c01.twipcam.com/cam/snapshot/nwt-000274.jpg" alt="樹林監視器" class="cam-img" onerror="this.src='https://placehold.co/600x400?text=影像暫時無法讀取'">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    國三 47K 北向 (高空雲層參考)
+                </div>
+                <div class="img-container">
+                    <img src="https://cctvn.freeway.gov.tw/abs2mjpg/bmjpg?camera=34720" alt="國道監視器" class="cam-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 浮洲飛場 -->
+    <section class="location-section">
+        <h2>📍 新北市浮洲環保公園</h2>
+        <div class="status-bar">
+            <div id="status-fuzhou" class="status-light">檢測中...</div>
+            <div class="wind-detail" id="detail-fuzhou">正在讀取最新氣象資料...</div>
+        </div>
+
+        <div class="widget-grid">
+            <div class="card">
+                <div class="card-header">即時天氣觀測</div>
+                <iframe src="https://www.twipcam.com/widget/v1/wx-info?lat=24.9891&lon=121.4401"></iframe>
+            </div>
+            <div class="card">
+                <div class="card-header">動態風場預測</div>
+                <iframe src="https://www.twipcam.com/widget/v1/wind?lat=24.9891&lon=121.4401&zoom=10"></iframe>
+            </div>
+        </div>
+
+        <div class="cam-grid">
+            <div class="card">
+                <div class="card-header">
+                    台65線 9K+600 (浮洲橋旁)
+                    <a href="https://www.twipcam.com/cam/t65-9k-600" target="_blank" class="external-link">開啟大圖 ↗</a>
+                </div>
+                <div class="img-container">
+                    <img src="https://c01.twipcam.com/cam/snapshot/t65-10k-126.jpg" alt="台65監視器" class="cam-img">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    土城抽水站 (河床側風參考)
+                    <a href="https://www.twipcam.com/cam/wra-002469" target="_blank" class="external-link">開啟大圖 ↗</a>
+                </div>
+                <div class="img-container">
+                    <img src="https://c01.twipcam.com/cam/snapshot/wra-002469.jpg" alt="土城抽水站" class="cam-img">
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>高程YOYO班 專屬飛場資訊平台</p>
+    <p>資料來源：Open-Meteo / Twipcam / 交通部公路局 / 經濟部水利署</p>
+    <p>© 2026 高程YOYO班 飛場安全觀測組</p>
+</footer>
+
+<script>
+/**
+ * 更新頂部時鐘
+ */
+function updateClock() {
+    const now = new Date();
+    document.getElementById('global-clock').innerText = '最後更新時間：' + now.toLocaleTimeString('zh-TW', { 
+        hour12: false,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+/**
+ * 判定飛行狀態與樣式 (依據風速及陣風判定)
+ */
+function judgeStatus(wind, gust) {
+    const maxWind = Math.max(wind, gust);
+    if (maxWind < 5) return { cls: 'good', text: '🟢 適合飛行' };
+    if (maxWind < 8) return { cls: 'warn', text: '🟡 需注意風況' };
+    return { cls: 'bad', text: '🔴 風速過大' };
+}
+
+/**
+ * 抓取氣象 API 資料
+ */
+async function fetchWeatherData(lat, lon, statusId, detailId) {
+    try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=wind_speed_10m,wind_gusts_10m&wind_speed_unit=ms`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        const speed = data.current.wind_speed_10m;
+        const gust = data.current.wind_gusts_10m;
+        
+        const result = judgeStatus(speed, gust);
+        const elStatus = document.getElementById(statusId);
+        const elDetail = document.getElementById(detailId);
+        
+        elStatus.className = 'status-light ' + result.cls;
+        elStatus.innerText = result.text;
+        elDetail.innerText = `持續風速: ${speed.toFixed(1)} m/s | 最大陣風: ${gust.toFixed(1)} m/s`;
+        
+    } catch (error) {
+        console.error('API Error:', error);
+        document.getElementById(detailId).innerText = '資料獲取失敗，請檢查網路連線。';
+    }
+}
+
+/**
+ * 刷新全部資料
+ */
+function refreshAllData() {
+    updateClock();
+    // 後村堰座標
+    fetchWeatherData(24.9604, 121.3792, 'status-houchun', 'detail-houchun');
+    // 浮洲座標
+    fetchWeatherData(24.9891, 121.4401, 'status-fuzhou', 'detail-fuzhou');
+    
+    // 重新載入所有圖片以防止快取舊圖 (加上隨機參數)
+    const images = document.querySelectorAll('.img-container img.cam-img');
+    const timestamp = new Date().getTime();
+    images.forEach(img => {
+        const baseUrl = img.src.split('?')[0];
+        img.src = `${baseUrl}?t=${timestamp}`;
+    });
+}
+
+// 初始化與定時器設定
+window.onload = () => {
+    refreshAllData();
+    // 每 60 秒自動更新一次
+    setInterval(refreshAllData, 60000);
+};
+</script>
+
+</body>
+</html>
